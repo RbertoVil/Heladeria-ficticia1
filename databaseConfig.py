@@ -25,8 +25,11 @@ def conectar(nombreDataBase):
         cursor.execute(f"CREATE DATABASE { nombreDataBase };")
         cursor.execute(f"USE { nombreDataBase };")
 
-    # Creamos la tabla para almacenar los helados en venta:
-    cursor.execute("CREATE TABLE menu (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, name VARCHAR(150), description VARCHAR(2000), price FLOAT);")
+    try:
+        # Creamos la tabla para almacenar los helados en venta:
+        cursor.execute("CREATE TABLE menu (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, name VARCHAR(150), description VARCHAR(2000), price FLOAT);")
+    except:
+        pass
 
     return(conexion, cursor)
 
