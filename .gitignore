@@ -3,4 +3,4 @@
 *.swp
 
 # Ignorar binarios de python generados automáticamente
-__pycache__/*
+./__pycache__/*
