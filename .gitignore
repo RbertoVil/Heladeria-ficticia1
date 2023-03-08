@@ -1,3 +1,6 @@
 
 # Ignorar archivos temporales
 *.swp
+
+# Ignorar binarios de python generados automáticamente
+/__pycache__/*
