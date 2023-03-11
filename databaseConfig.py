@@ -25,14 +25,35 @@ def conectar(nombreDataBase):
         cursor.execute(f"CREATE DATABASE { nombreDataBase };")
         cursor.execute(f"USE { nombreDataBase };")
 
-    try:
+    #try:
         # Creamos la tabla para almacenar los helados en venta:
-        cursor.execute("CREATE TABLE menu (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, name VARCHAR(150), description VARCHAR(2000), price FLOAT);")
-    except:
-        pass
+        #cursor.execute("CREATE TABLE menu (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, name VARCHAR(150), description VARCHAR(2000), price FLOAT);")
+    #except:
+        #pass
 
     return(conexion, cursor)
 
-def insertar(cursor, name, description, price):
-    cursor.execute(f"INSERT INTO menu (name, description, price) VALUES ({ name }, { description }, { price });")
+def insertar(addName, addDescription, addPrice):
+    # Establecemos conexion con la base de datos para insertar filas
+    conexionDB = conectar("prueba3")
+    conexion = conexionDB[0]
+    cursor = conexionDB[1]
+
+    addName = "\'" + addName + "\'"
+    addDescription = "\'" + addDescription + "\'"
+    
+    #comando = "INSERT INTO menu (name, description, price) VALUES (%s, %s, %s);"
+    #valores = (addName, addDescription, addPrice)
+
+    comando = f"INSERT INTO menu (name, description, price) VALUES ({ addName }, { addDescription }, { addPrice });"
+
+    print(comando)
+    conexion.commit()
+    #cursor.execute(comando, valores)
+    cursor.execute(comando)
+
+    print(cursor.rowcount, "Dato insertado")
+
+    cursor.close()
+    conexion.close()
     return(True)
