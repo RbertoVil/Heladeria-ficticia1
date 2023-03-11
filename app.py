@@ -27,6 +27,19 @@ def login():
     error = None
     return render_template("login.html", error = error)
 
+@app.route("/insertar", methods=["GET", "POST"])
+def insertarDatos():
+    if request.method == "POST":
+        # Seleccionamos los datos a ingresar
+        name = request.form["add-name"]
+        description = request.form["add-description"]
+        price = request.form["add-price"]
+
+        # Insertamos los datos:
+        databaseConfig.insertar(name, description, price)
+
+    return render_template("insertarDatos.html")
+
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
     # Si intentan ingresar a /admin de forma incorrecta
@@ -44,4 +57,15 @@ def admin():
 #for i in cursor:
 #    print(i)
 
-    return render_template("admin.html")
+    conexionDB = databaseConfig.conectar("prueba3")
+    conexion = conexionDB[0]
+    cursor = conexionDB[1]
+
+    lineas = []
+    cursor.execute("SELECT * FROM menu;")
+    for i in cursor:
+        lineas.append(i)
+
+    conexion.close()
+
+    return render_template("admin.html", lineas = lineas)
