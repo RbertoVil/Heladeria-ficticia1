@@ -48,9 +48,10 @@ def insertar(addName, addDescription, addPrice):
     comando = f"INSERT INTO menu (name, description, price) VALUES ({ addName }, { addDescription }, { addPrice });"
 
     print(comando)
-    conexion.commit()
     #cursor.execute(comando, valores)
     cursor.execute(comando)
+
+    conexion.commit()
 
     print(cursor.rowcount, "Dato insertado")
 
