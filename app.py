@@ -53,7 +53,6 @@ def admin():
         return render_template("login.html")
 
 # Para eliminar y editar datos usar el "i"
-#cursor.execute("SELECT * FROM menu;")
 #for i in cursor:
 #    print(i)
 

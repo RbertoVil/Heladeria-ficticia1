@@ -42,18 +42,15 @@ def insertar(addName, addDescription, addPrice):
     addName = "\'" + addName + "\'"
     addDescription = "\'" + addDescription + "\'"
     
-    #comando = "INSERT INTO menu (name, description, price) VALUES (%s, %s, %s);"
-    #valores = (addName, addDescription, addPrice)
-
     comando = f"INSERT INTO menu (name, description, price) VALUES ({ addName }, { addDescription }, { addPrice });"
 
+    print("Ejecutando el comando:")
     print(comando)
-    #cursor.execute(comando, valores)
     cursor.execute(comando)
 
     conexion.commit()
 
-    print(cursor.rowcount, "Dato insertado")
+    print(cursor.rowcount, "Dato(s) insertado(s)")
 
     cursor.close()
     conexion.close()
