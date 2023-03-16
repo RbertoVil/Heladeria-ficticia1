@@ -1,7 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for
+import os
 import databaseConfig
 
+# IMG_FOLDER = "/static/img" # Es más simple, pero solo sirve para sistemas operativos POSIX
+# Porque estos usan el separador del path slash ('/')
+IMG_FOLDER = os.path.join('static', 'img') # implementación multiplataforma
+# Porque utiliza el separador del path correspondiente al SO
+
 app = Flask(__name__)
+app.config['IMG_FOLDER'] = IMG_FOLDER
+# print(app.config) # For debbuging
 
 @app.route("/")
 def heladeria():
@@ -42,6 +50,10 @@ def insertarDatos():
 
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
+    # Las direcciones de las imagenes:
+    imgEdit = os.path.join(app.config['IMG_FOLDER'], "editar.svg")
+    imgDelete = os.path.join(app.config['IMG_FOLDER'], "cruz.svg")
+
     # Si intentan ingresar a /admin de forma incorrecta
     if request.method == "POST":
         if request.form["username"] != "admin" or request.form["password"] != "r1234":
@@ -67,4 +79,4 @@ def admin():
 
     conexion.close()
 
-    return render_template("admin.html", lineas = lineas)
+    return render_template("admin.html", lineas = lineas, imgEdit = imgEdit, imgDelete = imgDelete)
