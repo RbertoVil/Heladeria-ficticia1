@@ -7,12 +7,17 @@
 			<th>name</th>
 			<th>description</th>
 			<th>price</th>
+			<th>edit_</th>
 		</tr>
 		{% for linea in lineas %}
 		<tr>
 			{% for item in linea %}
 				<td>{{ item }}</td>
 			{% endfor %}
+				<td>
+					<img alt="Edit?" src="{{ imgEdit }}" height="50px" style="color: green;">
+					<img alt="Delete?" src="{{ imgDelete }}" height="50px" style="color red;">
+				</td>
 		</tr>
 		{% endfor %}
 	</table>
