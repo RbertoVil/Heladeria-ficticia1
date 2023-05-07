@@ -48,6 +48,38 @@ def insertarDatos():
 
     return render_template("insertarDatos.html")
 
+@app.route("/editar", methods=["GET", "POST"])
+def editarDatos():
+    if request.method == "POST":
+        # Seleccionamos los datos a ingresar/eliminar
+        ID = request.form["edit-id"]
+        name = request.form["edit-name"]
+        description = request.form["edit-description"]
+        price = request.form["edit-price"]
+        mode = request.form["edit-mode"]
+
+        # Datos previos (para compararlos)
+        oldName = request.form["old-name"]
+        oldDescription = request.form["old-description"]
+        oldPrice = request.form["old-price"]
+
+        if mode == "editar":
+            # Editamos los datos:
+            print("editando los datos...")
+            if name != oldName:
+                print("Editando Name")
+                databaseConfig.editar(ID, "name", name, "str")
+            if description != oldDescription:
+                print("Editando description")
+                databaseConfig.editar(ID, "description", description, "str")
+            if price != oldPrice:
+                print("Editando price")
+                databaseConfig.editar(ID, "price", price, "float")
+
+        # Eliminamos los datos:
+
+    return render_template("editarDatos.html")
+
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
     # Las direcciones de las imagenes:

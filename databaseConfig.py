@@ -55,3 +55,27 @@ def insertar(addName, addDescription, addPrice):
     cursor.close()
     conexion.close()
     return(True)
+
+def editar(ID, campoEdit, valorNuevo, tipoDatoValor):
+    # Editar un campo de la base de datos
+    conexionDB = conectar("prueba3")
+    conexion = conexionDB[0]
+    cursor = conexionDB[1]
+
+    if tipoDatoValor == "str":
+        # Si el datos a ingresar será un str
+        comando = f"UPDATE menu SET { campoEdit } = '{ valorNuevo }' WHERE id = { ID };"
+    elif tipoDatoValor == "float":
+        try:
+            # Si el dato a ingresar es un float (para price)
+            comando = f"UPDATE menu SET { campoEdit } = { valorNuevo } WHERE id = { ID };" 
+            cursor.execute(comando)
+        except:
+            comando = f"UPDATE menu SET { campoEdit } = NULL WHERE id = { ID };" 
+
+    cursor.execute(comando)
+    conexion.commit()
+    cursor.close()
+    conexion.close()
+
+    return(True)

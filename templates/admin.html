@@ -7,7 +7,7 @@
 			<th>name</th>
 			<th>description</th>
 			<th>price</th>
-			<th>edit_</th>
+			<th>edit?</th>
 		</tr>
 		{% for linea in lineas %}
 		<tr>
@@ -15,8 +15,12 @@
 				<td>{{ item }}</td>
 			{% endfor %}
 				<td>
-					<img alt="Edit?" src="{{ imgEdit }}" height="50px">
-					<img alt="Delete?" src="{{ imgDelete }}" height="50px">
+					<button class="boton-editar">
+						<img alt="Edit?" src="{{ imgEdit }}" height="50px">
+					</button>
+					<button class="boton-eliminar">
+						<img alt="Delete?" src="{{ imgDelete }}" height="50px">
+					</button>
 				</td>
 		</tr>
 		{% endfor %}
@@ -35,6 +39,18 @@
 		<input type="submit" value="Enviar Datos a agregar">
 	</form>
 
+	<form action="{{ url_for("editarDatos") }}" method="post" id="formulario-editar" style="display: none;">
+		<input type="text" name="edit-id" readonly>
+		<input type="text" name="edit-name">
+		<input type="hidden" name="old-name"/>
+		<input type="text" name="edit-description">
+		<input type="hidden" name="old-description"/>
+		<input type="number" step="0.01" name="edit-price">
+		<input type="hidden" name="old-price"/>
+		<input type="hidden" name="edit-mode">
+		<input type="submit" value="Enviar datos a editar">
+	</form>
+
 	<script>
 
 lista = document.getElementsByTagName("tr");
@@ -45,21 +61,57 @@ for (let i = 0; i < lista.length; i++) {
 		// buscamos entre cada td de nuestra fila de datos
 		elementosId = lista[i].getElementsByTagName("td");
 		// el id del elemento en la base de datos
-		nroId = elementosId[0].innerHTML;
+		// nroId = elementosId[0].innerHTML;
+		nroId = i;
 		// la asignamos como id de la fila de la tabla (tr)
-		lista[i].setAttribute("id", nroId);
+		lista[i].setAttribute("id", "fila" + nroId);
 	}
 };
 
 // Procedemos a mostrar el formulario para insertar datos
 
-function mostrarElemen() {
-	// Funcion para mostrar formulario
-	formularioInsertar = document.getElementById("formulario-insertar");
-	formularioInsertar.setAttribute("style", "display: block");
-};
-// Mostramos el formulario
-boton = document.getElementById("boton-agregar");
-boton.addEventListener("click", mostrarElemen);
+botonInsertar = document.getElementById("boton-agregar");
+formularioInsertar = document.getElementById("formulario-insertar");
+botonInsertar.addEventListener("click", () => {
+	formularioInsertar.setAttribute("style", "display: block")
+});
+
+formularioEditar = document.getElementById("formulario-editar");
+
+// Procedemos a mostrar el formulario para editar datos
+
+botonesEditar = document.getElementsByClassName("boton-editar");
+for (let i = 0; i < botonesEditar.length; i++) {
+	// Agregamos el listener a cada boton
+	botonesEditar[i].addEventListener ("click", () => {
+		// Rellenaremos el formulario con los datos que queremos editar
+		console.log("presionado el boton: " + i);
+		// Primero seleccionamos los datos de la fila seleccionada
+		seleccionFila = i + 1;
+		filaTabla = document.getElementById("fila" + seleccionFila);
+		datosFila = filaTabla.getElementsByTagName("td");
+		console.log(datosFila);
+		// Seleccionamos los datos para agregarlos al formulario
+		idEditar = datosFila[0].innerHTML;
+		nameEditar = datosFila[1].innerHTML;
+		descriptionEditar = datosFila[2].innerHTML;
+		priceEditar = datosFila[3].innerHTML
+		// Insertamos los datos en el formulario
+		inputsFormulario = formularioEditar.getElementsByTagName("input");
+
+		inputsFormulario[0].setAttribute("value", idEditar);	// id
+		inputsFormulario[1].setAttribute("value", nameEditar);	// name
+		inputsFormulario[2].setAttribute("value", nameEditar);	// old name
+		inputsFormulario[3].setAttribute("value", descriptionEditar);	// description
+		inputsFormulario[4].setAttribute("value", descriptionEditar);	// old description
+		inputsFormulario[5].setAttribute("value", priceEditar);	// price
+		inputsFormulario[6].setAttribute("value", priceEditar);	// old price
+
+		inputsFormulario[7].setAttribute("value", "editar");	// modo de edición
+
+		formularioEditar.setAttribute("style", "display: block");
+	});
+}
+
 	</script>
 {% endblock %}
