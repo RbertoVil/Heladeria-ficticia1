@@ -32,7 +32,8 @@
 	<button id="boton-agregar">Agregar producto</button>
 
 	<form action="{{ url_for("insertarDatos") }}" method="post" id="formulario-insertar" style="display: none">
-	<!-- Mantenemos este formulario oculto -->
+        <!-- Formulario insertar datos -->
+        <!-- Mantenemos este formulario oculto -->
 		<input type="text" name="add-name">
 		<input type="text" name="add-description">
 		<input type="number" step="0.01" name="add-price">
@@ -40,24 +41,26 @@
 	</form>
 
 	<form action="{{ url_for("editarDatos") }}" method="post" id="formulario-editar" style="display: none;">
-		<input type="text" name="edit-id" value="0" readonly>
-		<input type="text" name="edit-name" value="0">
-		<input type="hidden" name="old-name" value="0"/>
-		<input type="text" name="edit-description" value="0">
-		<input type="hidden" name="old-description" value="0"/>
-		<input type="number" step="0.01" name="edit-price" value="0">
-		<input type="hidden" name="old-price" value="0"/>
-		<input type="hidden" name="edit-mode" value="0">
-        <!-- <input type="reset" value="limpiar datos del formulario"> -->
+        <!-- Formulario editar datos -->
+		<input type="text" name="edit-id" readonly/>
+		<input type="text" name="edit-name"/>
+		<input type="hidden" name="old-name"/>
+		<input type="text" name="edit-description"/>
+		<input type="hidden" name="old-description"/>
+		<input type="number" step="0.01" name="edit-price"/>
+		<input type="hidden" name="old-price"/>
+		<input type="hidden" name="edit-mode" value="edit"/>
         <input type="reset" value="Limpiar datos del formulario"/>
-		<input type="submit" value="Enviar datos a editar">
+		<input type="submit" value="Enviar datos a editar"/>
 	</form>
 
-    <form>
+    <form method="post" id="formulario-eliminar" style="display: none;">
+        <!-- Formulario elimnar datos-->
         <input type="text" name="del-id" readonly/>
         <input type="text" name="del-name" readonly/>
         <input type="text" name="del-description" readonly/>
         <input type="number" step="0.01" name="del-price" readonly/>
+        <input type="hidden" name="edit-mode" value="del"/>
         <input type="submit" value="Eliminar datos"/>
     </form>
 
@@ -65,52 +68,37 @@
 
 lista = document.getElementsByTagName("tr");
 
+botonInsertar = document.getElementById("boton-agregar");
+formularioInsertar = document.getElementById("formulario-insertar");
+
+// Seleccionamos formularios editar y eliminar
+formularioEditar = document.getElementById("formulario-editar");
+formularioEliminar = document.getElementById("formulario-eliminar");
+
 for (let i = 0; i < lista.length; i++) {
 	// Asignar id a cada elemento tr de la tabla
 	if (i != 0) {
-		// buscamos entre cada td de nuestra fila de datos
-		elementosId = lista[i].getElementsByTagName("td");
-		// el id del elemento en la base de datos
-		// nroId = elementosId[0].innerHTML;
 		nroId = i;
-		// la asignamos como id de la fila de la tabla (tr)
 		lista[i].setAttribute("id", "fila" + nroId);
 	}
 };
 
 // Procedemos a mostrar el formulario para insertar datos
 
-botonInsertar = document.getElementById("boton-agregar");
-formularioInsertar = document.getElementById("formulario-insertar");
 botonInsertar.addEventListener("click", () => {
-	formularioInsertar.setAttribute("style", "display: block")
-});
-
-// Seleccionamos formulario editar
-formularioEditar = document.getElementById("formulario-editar");
-
-/*
-// Creamos el boton reset
-botonReset = document.getElementById("boton-reset");
-function resetForm() {
-    // Reseteamos los botones del formulario
-    botonesForm = formularioEditar.getElementsByTagName("input");
-    console.log("limpiando datos")
-    for (let i = 0; i < botonesForm.lenght; i++) {
-        botonesForm[i].setAttribute("value", "a");
-        if (i === 0) {
-            botonesForm[i].setAttribute("readonly", "true");
-        } else {
-            botonesForm[i].removeAttribute("readonly");
-        }
+    // Primero verificamos si ya es visible
+    atributo = formularioInsertar.getAttribute("style");
+    if (atributo === "display: block") {
+        // De ser visible lo ocultamos
+        formularioInsertar.setAttribute("style", "display: none");
     }
-}
-
-botonReset.addEventListener("click", () => {
-    console.log("limpiando");
-    document.getElementById("formulario-editar").reset();
+    else {
+        formularioInsertar.setAttribute("style", "display: block")
+    }
+    // Ocultamos los otros formularios:
+    formularioEditar.setAttribute("style", "display: none");
+    formularioEliminar.setAttribute("style", "display: none");
 });
-*/
 
 // Procedemos a mostrar el formulario para editar datos
 
@@ -118,6 +106,10 @@ botonesEditar = document.getElementsByClassName("boton-editar");
 for (let i = 0; i < botonesEditar.length; i++) {
 	// Agregamos el listener a cada boton
 	botonesEditar[i].addEventListener ("click", () => {
+        // Ocultamos los otros formularios:
+        formularioInsertar.setAttribute("style", "display: none");
+        formularioEliminar.setAttribute("style", "display: none");
+
 		// Rellenaremos el formulario con los datos que queremos editar
 		console.log("presionado el boton: " + i);
 		// Primero seleccionamos los datos de la fila seleccionada
@@ -141,23 +133,25 @@ for (let i = 0; i < botonesEditar.length; i++) {
 		inputsFormulario[5].setAttribute("value", priceEditar);	// price
 		inputsFormulario[6].setAttribute("value", priceEditar);	// old price
 
-		inputsFormulario[7].setAttribute("value", "editar");	// modo de edición
-
         // Para evitar bugs
-        for (let i = 1; i < inputsFormulario.length; i++) {
+        for (let j = 1; j < inputsFormulario.length; j++) {
             // Eliminaremos readonly para todos los inputs, excepto el id
-            inputsFormulario[i].removeAttribute("readonly");
+            inputsFormulario[j].removeAttribute("readonly");
         };
 		formularioEditar.setAttribute("style", "display: block");
 	});
 }
 
-// Procedemos a mostrar el formularioEditar en modo de eliminación
+// Procedemos a mostrar el formularioEliminar
 
 botonesEliminar = document.getElementsByClassName("boton-eliminar");
 for (let i = 0; i < botonesEliminar.length; i++) {
     // Agregamos el listener a cada boton
     botonesEliminar[i].addEventListener ("click", () => {
+        // Ocultamos los otros formularios:
+        formularioInsertar.setAttribute("style", "display: none");
+        formularioEditar.setAttribute("style", "display: none");
+
         // Rellenamos el formulario con los datos a eliminar
         console.log("Presionado el botón: " + i);
         // Seleccionamos los datos de la fila seleccionada
@@ -171,20 +165,18 @@ for (let i = 0; i < botonesEliminar.length; i++) {
         descriptionEliminar = datosFila[2].innerHTML;
         priceEliminar = datosFila[3].innerHTML;
         // Insertamos los datos al formulario
-        inputsFormulario = formularioEditar.getElementsByTagName("input");
+        inputsFormulario = formularioEliminar.getElementsByTagName("input");
 
         inputsFormulario[0].setAttribute("value", idEliminar);  // id
         inputsFormulario[1].setAttribute("value", nameEliminar);    // name
-        inputsFormulario[3].setAttribute("value", descriptionEliminar); // Description
-        inputsFormulario[5].setAttribute("value", priceEliminar);   // price
+        inputsFormulario[2].setAttribute("value", descriptionEliminar); // Description
+        inputsFormulario[3].setAttribute("value", priceEliminar);   // price
 
-        inputsFormulario[7].setAttribute("value", "eliminar");  // Modo de edición
+        formularioEliminar.setAttribute("style", "display: block");
 
-        formularioEditar.setAttribute("style", "display: block");
-
-        for (let i = 0; i < inputsFormulario.length; i++) {
+        for (let j = 0; j < inputsFormulario.length; j++) {
             // Colocaremos como solo lectura los inputs
-            inputsFormulario[i].setAttribute("readonly", true);
+            inputsFormulario[j].setAttribute("readonly", true);
         };
     });
 }
